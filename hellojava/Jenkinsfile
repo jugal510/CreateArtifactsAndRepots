@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    tools {
+      maven 'Maven-3.9.4'
+    }
+    stages {
+        stage('Source') {
+            steps {
+                git branch: 'main',
+                    changelog: false,
+                    poll: false,
+                    url: 'https://github.com/jugal510/CreateArtifactsAndRepots.git'
+            }
+        }
+        stage('Clean') {
+            steps {
+                dir("${env.WORKSPACE}/CreateArtifactsAndRepots"){
+                    echo "Cleaning the workspace..."
+                    sh 'mvn clean'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                dir("${env.WORKSPACE}/CreateArtifactsAndRepots"){
+                    echo "Running tests..."
+                    sh 'mvn test'
+                }
+            }
+        }
+        stage('Package') {
+            steps {
+                dir("${env.WORKSPACE}/CreateArtifactsAndRepots"){
+                    echo "Creating the JAR file..."
+                    sh 'mvn package -DskipTests'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo "Collecting jUnit test results..."
+            junit allowEmptyResults: true, 
+            testResults: '**/TEST-com.learningjenkins.AppTest.xml'
+
+            echo "Archiving the JAR file..."
+            archiveArtifacts allowEmptyArchive: true, 
+            artifacts: '**/hello-1.0-SNAPSHOT.jar', 
+            followSymlinks: false, 
+            onlyIfSuccessful: true
+        }
+    }
+}
