@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Clean') {
             steps {
-                dir("${env.WORKSPACE}/CreateArtifactsAndRepots"){
+                dir("${env.WORKSPACE}/CreateArtifactsAndRepots/hellojava"){
                     echo "Cleaning the workspace..."
                     sh 'mvn clean'
                 }
@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                dir("${env.WORKSPACE}/CreateArtifactsAndRepots"){
+                dir("${env.WORKSPACE}/CreateArtifactsAndRepots/hellojava"){
                     echo "Running tests..."
                     sh 'mvn test'
                 }
@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Package') {
             steps {
-                dir("${env.WORKSPACE}/CreateArtifactsAndRepots"){
+                dir("${env.WORKSPACE}/CreateArtifactsAndRepots/hellojava"){
                     echo "Creating the JAR file..."
                     sh 'mvn package -DskipTests'
                 }
