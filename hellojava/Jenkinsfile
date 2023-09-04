@@ -15,7 +15,6 @@ pipeline {
         stage('Clean') {
             steps {
                 dir("${env.WORKSPACE/hellojava}"){
-                    echo ${env.WORKSPACE}
                     echo "Cleaning the workspace..."
                     sh 'mvn clean'
                 }
@@ -23,7 +22,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                dir("${env.WORKSPACE}"){
+                dir("${env.WORKSPACE/hellojava}"){
                     echo "Running tests..."
                     sh 'mvn test'
                 }
@@ -31,7 +30,7 @@ pipeline {
         }
         stage('Package') {
             steps {
-                dir("${env.WORKSPACE}"){
+                dir("${env.WORKSPACE/hellojava}"){
                     echo "Creating the JAR file..."
                     sh 'mvn package -DskipTests'
                 }
@@ -42,7 +41,7 @@ pipeline {
         always {
             echo "Collecting jUnit test results..."
             junit allowEmptyResults: true, 
-            testResults: '**/TEST-com.learningjenkins.AppTest.xml'
+            testResults: '**/TEST-com.artifacts.AppTest.xml'
 
             echo "Archiving the JAR file..."
             archiveArtifacts allowEmptyArchive: true, 
